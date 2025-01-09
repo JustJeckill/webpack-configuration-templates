@@ -1,13 +1,15 @@
-const path = require('path');
+import path from 'path';
 
 //plugins
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from'webpack';
+import 'webpack-dev-server';
 
-module.exports = (env) => {
-    return {
+export default (env: any) => {
+    const config: webpack.Configuration = {
         mode: env.mode ?? 'development',
         // one entry point, use string
-        entry: path.resolve(__dirname, 'src', 'index.js'),
+        entry: path.resolve(__dirname, 'src', 'index.ts'),
         // multiply entry point, use object and If an object is passed the value might be a string, array of strings, or a descriptor
         // entry: {
         //     home: './home.js',
@@ -36,7 +38,21 @@ module.exports = (env) => {
             clean: true // if it's true we don't need to remove old build files by hands
         },
         plugins: [
-            new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'public', 'index.html') })
+            new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'public', 'index.html') }),
+            new webpack.ProgressPlugin(), //show build progress by percentages (turn off for prod build, it makes build slowly)
         ],
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/,
+                },
+            ],
+        },
+        resolve: {
+            extensions: ['.tsx', '.ts', '.js'],
+        },
     }
+    return config;
 };
