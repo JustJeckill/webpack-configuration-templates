@@ -5,7 +5,13 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import webpack from'webpack';
 import 'webpack-dev-server';
 
-export default (env: any) => {
+type Mode = 'production' | 'development';
+
+interface EnvVariables {
+    mode: Mode
+}
+
+export default (env: EnvVariables) => {
     const config: webpack.Configuration = {
         mode: env.mode ?? 'development',
         // one entry point, use string
@@ -52,6 +58,12 @@ export default (env: any) => {
         },
         resolve: {
             extensions: ['.tsx', '.ts', '.js'],
+        },
+        devServer: {
+            static: './dist',
+        },
+        optimization: {
+            runtimeChunk: 'single',
         },
     }
     return config;
