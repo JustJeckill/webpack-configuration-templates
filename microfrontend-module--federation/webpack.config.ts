@@ -5,6 +5,12 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import webpack from'webpack';
 import 'webpack-dev-server';
 
+import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
+import type { Configuration } from "webpack";
+
+const devServer: DevServerConfiguration = {};
+const config: Configuration = { devServer };
+
 type Mode = 'production' | 'development';
 
 interface EnvVariables {
@@ -60,7 +66,8 @@ export default (env: EnvVariables) => {
             extensions: ['.tsx', '.ts', '.js'],
         },
         devServer: {
-            static: './dist',
+            port: 5000,
+            open: true
         },
         optimization: {
             runtimeChunk: 'single',
