@@ -21,7 +21,7 @@ export default (env: EnvVariables) => {
     const config: webpack.Configuration = {
         mode: env.mode ?? 'development',
         // one entry point, use string
-        entry: path.resolve(__dirname, 'src', 'index.ts'),
+        entry: path.resolve(__dirname, 'src', 'index.tsx'),
         // multiply entry point, use object and If an object is passed the value might be a string, array of strings, or a descriptor
         // entry: {
         //     home: './home.js',
@@ -56,6 +56,8 @@ export default (env: EnvVariables) => {
         module: {
             rules: [
                 {
+                    // ts-loader can work with JSX
+                    // if don't use ts-loader, we need to use babel
                     test: /\.tsx?$/,
                     use: 'ts-loader',
                     exclude: /node_modules/,
