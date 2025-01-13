@@ -55,10 +55,15 @@ export default (env: EnvVariables) => {
         },
         plugins: [
             new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'public', 'index.html') }),
-            new webpack.ProgressPlugin(), //show build progress by percentages (turn off for prod build, it makes build slowly)
-        ],
+            isDev && new webpack.ProgressPlugin(), //show build progress by percentages (turn off for prod build, it makes build slowly)
+        ].filter(Boolean),
         module: {
             rules: [
+                // order matters
+                {
+                    test: /\.s[ac]ss$/i,
+                    use: ["style-loader", "css-loader", "sass-loader"],
+                },
                 {
                     // ts-loader can work with JSX
                     // if don't use ts-loader, we need to use babel
