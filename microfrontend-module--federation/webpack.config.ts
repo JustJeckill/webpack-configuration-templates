@@ -1,8 +1,9 @@
 import path from 'path';
+import webpack from'webpack';
 
 //plugins
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import webpack from'webpack';
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import 'webpack-dev-server';
 
 import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
@@ -20,6 +21,7 @@ interface EnvVariables {
 
 export default (env: EnvVariables) => {
     const isDev = env.mode === 'development';
+    const isProd = env.mode === 'production';
 
     const config: webpack.Configuration = {
         mode: env.mode ?? 'development',
@@ -55,6 +57,10 @@ export default (env: EnvVariables) => {
         },
         plugins: [
             new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'public', 'index.html') }),
+            isDev && new MiniCssExtractPlugin({
+                filename: 'css/[name].[hash:5].css',
+                chunkFilename: 'css/[name].[hash:5].css',
+            }),
             isDev && new webpack.ProgressPlugin(), //show build progress by percentages (turn off for prod build, it makes build slowly)
         ].filter(Boolean),
         module: {
@@ -62,7 +68,11 @@ export default (env: EnvVariables) => {
                 // order matters
                 {
                     test: /\.s[ac]ss$/i,
-                    use: ["style-loader", "css-loader", "sass-loader"],
+                    use: [
+                        isProd ? "style-loader" : MiniCssExtractPlugin.loader,
+                        "css-loader",
+                        "sass-loader"
+                    ], // replace style-loader to MiniCssExtractPlugin.loader if use plugin
                 },
                 {
                     // ts-loader can work with JSX
