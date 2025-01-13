@@ -4,7 +4,7 @@
     "noImplicitAny": true,
     "module": "ESNext",
     "target": "es5",
-    "jsx": "react",
+    "jsx": "react-jsx", // don't need to use import react in files with this option
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,

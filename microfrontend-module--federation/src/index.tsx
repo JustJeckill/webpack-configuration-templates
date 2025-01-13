@@ -1,4 +1,11 @@
-import {test} from "./test";
+import {createRoot} from "react-dom/client";
+import {App} from "./components/App";
 
-console.log('test');
-test({a: 4, b: 7, c: 13})
+const root = document.getElementById('root');
+
+if(!root) {
+    throw new Error('root not found');
+}
+
+const container = createRoot(root);
+container.render(<App />);

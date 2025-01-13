@@ -14,10 +14,13 @@ const config: Configuration = { devServer };
 type Mode = 'production' | 'development';
 
 interface EnvVariables {
-    mode: Mode
+    mode: Mode,
+    port: number
 }
 
 export default (env: EnvVariables) => {
+    const isDev = env.mode === 'development';
+
     const config: webpack.Configuration = {
         mode: env.mode ?? 'development',
         // one entry point, use string
@@ -46,7 +49,8 @@ export default (env: EnvVariables) => {
         // entry: () => new Promise((resolve) => resolve(['./demo', './demo2'])),
         output: {
             path: path.resolve(__dirname, 'build'),
-            filename: 'bundle.[fullhash:5].js', // 5 - how many digits in hash
+            filename: '[name].[fullhash:5].js', // 5 - how many digits in hash
+            chunkFilename: '[name].[fullhash: 5].js',
             clean: true // if it's true we don't need to remove old build files by hands
         },
         plugins: [
@@ -67,10 +71,11 @@ export default (env: EnvVariables) => {
         resolve: {
             extensions: ['.tsx', '.ts', '.js'],
         },
-        devServer: {
-            port: 5000,
+        devtool: isDev ? 'inline-source-map' : false,
+        devServer: isDev ? {
+            port: env.port ?? 3000, // command with port example - npm run start --  --env port=5002
             open: true
-        },
+        } : undefined,
         optimization: {
             runtimeChunk: 'single',
         },
