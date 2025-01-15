@@ -9,7 +9,7 @@ export function buildLoaders(options: BuildOptions): ModuleOptions['rules'] {
     const scssLoader = {
         test: /\.s[ac]ss$/i,
         use: [
-            isProd ? "style-loader" : MiniCssExtractPlugin.loader,
+            isProd ? MiniCssExtractPlugin.loader : "style-loader",
             "css-loader",
             "sass-loader"
         ], // replace style-loader to MiniCssExtractPlugin.loader if use plugin

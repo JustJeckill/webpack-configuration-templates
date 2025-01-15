@@ -5,14 +5,24 @@ import webpack, {Configuration} from "webpack";
 import {BuildOptions} from "./types/types";
 
 export function buildPlugins(options: BuildOptions): Configuration['plugins'] {
-    const isDev = options.mode === 'development';
+    const {mode, paths} = options;
+    const isDev = mode === 'development';
+    const isProd = mode === 'production';
 
-    return [
-        new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'public', 'index.html') }),
-        isDev && new MiniCssExtractPlugin({
+    const plugins: Configuration['plugins'] = [
+        new HtmlWebpackPlugin({ template: paths.html }),
+    ]
+
+    if(isDev) {
+        plugins.push(new webpack.ProgressPlugin());
+    }
+
+    if(isProd) {
+        plugins.push(new MiniCssExtractPlugin({
             filename: 'css/[name].[hash:5].css',
             chunkFilename: 'css/[name].[hash:5].css',
-        }),
-        isDev && new webpack.ProgressPlugin(), //show build progress by percentages (turn off for prod build, it makes build slowly)
-    ].filter(Boolean)
+        }));
+    }
+
+    return plugins;
 }

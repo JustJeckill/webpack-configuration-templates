@@ -6,6 +6,8 @@ import 'webpack-dev-server';
 
 import type {Configuration as DevServerConfiguration} from "webpack-dev-server";
 import {buildWebpack} from "./config/build/buildWebpack";
+import {BuildPaths, EnvVariables} from "./config/build/types/types";
+import path from "path";
 
 const devServer: DevServerConfiguration = {};
 const config: Configuration = { devServer };
@@ -13,8 +15,17 @@ const config: Configuration = { devServer };
 
 
 export default (env: EnvVariables) => {
-    const isDev = env.mode === 'development';
-    const isProd = env.mode === 'production';
+    const paths: BuildPaths =  {
+        entry: path.resolve(__dirname, 'src', 'index.tsx'),
+        output: path.resolve(__dirname, 'build'),
+        html: path.resolve(__dirname, 'public', 'index.html'),
+    }
 
-    return buildWebpack();
+    const config: webpack.Configuration = buildWebpack({
+        port: env.port ?? 3000,
+        mode: env.mode ?? 'development',
+        paths
+    })
+
+    return config;
 };

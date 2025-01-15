@@ -11,3 +11,8 @@ export interface BuildOptions {
     paths: BuildPaths,
     mode: BuildMode,
 }
+
+export interface EnvVariables {
+    mode: BuildMode,
+    port: number
+}

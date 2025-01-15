@@ -1,10 +1,6 @@
 import webpack from "webpack";
 import path from "path";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
-import type { Configuration } from "webpack";
 import {buildDevServer} from "./buildDevServer";
 import {buildLoaders} from "./buildLoaders";
 import {buildPlugins} from "./buildPlugins";
@@ -12,13 +8,16 @@ import {buildResolvers} from "./buildResolvers";
 import {BuildOptions} from "./types/types";
 
 export function buildWebpack(options: BuildOptions): webpack.Configuration {
-    const isDev = options.mode === 'development';
-    const isProd = options.mode === 'production';
+    const {mode, paths} = options;
+
+    const isDev = mode === 'development';
+    const isProd = mode === 'production';
+
 
     return {
-        mode: options.mode ?? 'development',
+        mode: mode ?? 'development',
         // one entry point, use string
-        entry: path.resolve(__dirname, 'src', 'index.tsx'),
+        entry: paths.entry,
         // multiply entry point, use object and If an object is passed the value might be a string, array of strings, or a descriptor
         // entry: {
         //     home: './home.js',
@@ -42,7 +41,7 @@ export function buildWebpack(options: BuildOptions): webpack.Configuration {
         // entry: () => './demo',
         // entry: () => new Promise((resolve) => resolve(['./demo', './demo2'])),
         output: {
-            path: path.resolve(__dirname, 'build'),
+            path: paths.output,
             filename: '[name].[fullhash:5].js', // 5 - how many digits in hash
             chunkFilename: '[name].[fullhash: 5].js',
             clean: true // if it's true we don't need to remove old build files by hands
@@ -51,7 +50,7 @@ export function buildWebpack(options: BuildOptions): webpack.Configuration {
         module: {
             rules: buildLoaders(options)
         },
-        resolve: buildResolvers(),
+        resolve: buildResolvers(options),
         devtool: isDev ? 'inline-source-map' : false,
         devServer: isDev ? buildDevServer(options) : undefined,
         optimization: {
